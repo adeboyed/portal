@@ -1,0 +1,9 @@
+
+name = "Is Up CLI"
+command = "is-up"
+
+[docker]
+    image = "Dockerfile"
+    working_dir = "/"
+
+[arguments]

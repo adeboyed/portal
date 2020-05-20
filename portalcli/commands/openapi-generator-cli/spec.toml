@@ -1,0 +1,20 @@
+
+name = "OpenAPI Generator CLI"
+command = "openapi-generator-cli"
+
+[docker]
+    image = "openapitools/openapi-generator-cli"
+    working_dir = "/"
+
+[arguments]
+
+    [arguments.input]
+        shorthand = "i"
+        argType = "path"
+        docker = "inputFile"
+
+    [arguments.output]
+        shorthand = "o"
+        argType = "path"
+        docker = "volumeBinding"
+        internalPath = "/local"

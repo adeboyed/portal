@@ -1,0 +1,9 @@
+
+name = "Wikit"
+command = "wikit"
+
+[docker]
+    image = "lujun9972/wikit.docker"
+    working_dir = "/"
+
+[arguments]

@@ -1,0 +1,9 @@
+
+name = "tldr"
+command = "tldr"
+
+[docker]
+    image = "Dockerfile"
+    working_dir = "/"
+
+[arguments]

@@ -1,0 +1,9 @@
+
+name = "Speed Test CLI"
+command = "speedtest-cli"
+
+[docker]
+    image = "moutten/docker-speedtest-cli"
+    working_dir = "/"
+
+[arguments]

@@ -1,0 +1,27 @@
+
+name = "Gollum Wiki"
+command = "gollum"
+
+[docker]
+    image = "winkapp/docker-gollum"
+    working_dir = "/"
+
+[arguments]
+
+    [arguments.help]
+        shorthand = "h"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.directory]
+        shorthand = "*"
+        argType = "path"
+        docker = "volumeBinding"
+        internalPath = "/wiki"
+
+    [arguments.ports]
+        shorthand = "p"
+        argType = "number"
+        docker = "portBinding"
+        internalPort = "4567"
+        default = "8080"

@@ -1,0 +1,7 @@
+
+name = "lolcat"
+command = "lolcat"
+
+[docker]
+    image = "jamesnetherton/lolcat"
+    working_dir = "/"

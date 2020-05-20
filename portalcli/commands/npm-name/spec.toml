@@ -1,0 +1,7 @@
+
+name = "npm-name-cli"
+command = "npm-name"
+
+[docker]
+    image = "Dockerfile"
+    working_dir = "/"

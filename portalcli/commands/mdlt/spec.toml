@@ -1,0 +1,7 @@
+
+name = "Metadata CLI"
+command = "mdlt"
+
+[docker]
+    image = "Dockerfile"
+    working_dir = "/"

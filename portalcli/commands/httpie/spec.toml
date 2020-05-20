@@ -1,0 +1,7 @@
+
+name = "httpie"
+command = "http"
+
+[docker]
+    image = "alpine/httpie"
+    working_dir = "/"

@@ -1,0 +1,65 @@
+
+name = "cwbp"
+command = "cwebp"
+
+[docker]
+    image = "nemanrus/cwebp"
+    working_dir = "/"
+
+[arguments]
+
+    [arguments.help]
+        shorthand = "h"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.inputfile]
+        shorthand = "*"
+        argType = "string"
+        docker = "inputFile"
+
+    [arguments.outputfile]
+        shorthand = "o"
+        argType = "string"
+        docker = "outputFile"
+
+    [arguments.version]
+        shorthand = "version"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.lossless]
+        shorthand = "lossless"
+        argType = "flag"
+        docker = "passthrough"
+    
+    [arguments.quality]
+        shorthand = "q"
+        argType = "string"
+        docker = "passthrough"
+
+    [arguments.z]
+        shorthand = "z"
+        argType = "string"
+        docker = "passthrough"
+
+    [arguments.alpha_q]
+        shorthand = "alpha_q"
+        argType = "string"
+        docker = "passthrough"
+
+    [arguments.preset]
+        shorthand = "preset"
+        argType = "string"
+        docker = "passthrough"
+
+    [arguments.m]
+        shorthand = "m"
+        argType = "string"
+        docker = "passthrough"
+    
+    [arguments.near_lossless]
+        shorthand = "near_lossless"
+        argType = "string"
+        docker = "passthrough"
+

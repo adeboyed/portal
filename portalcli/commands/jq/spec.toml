@@ -1,0 +1,9 @@
+
+name = "JQ"
+command = "jq"
+
+[docker]
+    image = "stedolan/jq"
+    working_dir = "/"
+
+[arguments]

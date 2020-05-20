@@ -1,0 +1,22 @@
+
+name = "HTTP server"
+command = "http-server"
+
+[docker]
+    image = "danjellz/http-server"
+    working_dir = "/"
+
+[arguments]
+
+    [arguments.directory]
+        shorthand = "*"
+        argType = "path"
+        docker = "volumeBinding"
+        internalPath = "/public"
+
+    [arguments.port]
+        shorthand = "p"
+        argType = "number"
+        docker = "portBinding"
+        internalPort = "8080"
+        default = "8080"

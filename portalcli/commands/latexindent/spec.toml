@@ -1,0 +1,48 @@
+name = "Latex Indent"
+command = "latexindent"
+
+[docker]
+    image = "m1dnight/latexindent"
+    working_dir = "/"
+
+[arguments]
+
+    [arguments.help]
+        shorthand = "h"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.version]
+        shorthand = "v"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.trace]
+        shorthand = "t"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.overwrite]
+        shorthand = "w"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.ttrace]
+        shorthand = "tt"
+        argType = "flag"
+        docker = "passthrough"
+    
+    [arguments.silent]
+        shorthand = "s"
+        argType = "flag"
+        docker = "passthrough"
+
+    [arguments.inputfile]
+        shorthand = "*"
+        argType = "string"
+        docker = "inOutFile"
+
+    [arguments.outputfile]
+        shorthand = "o"
+        argType = "string"
+        docker = "outputFile"

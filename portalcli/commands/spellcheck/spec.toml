@@ -1,0 +1,14 @@
+
+name = "Shell Check"
+command = "shellcheck"
+
+[docker]
+    image = "koalaman/shellcheck"
+    working_dir = "/"
+
+[arguments]
+
+    [arguments.inputfile]
+        shorthand = "*"
+        argType = "string"
+        docker = "inputFile"

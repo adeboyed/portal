@@ -1,0 +1,9 @@
+
+name = "viewport-list-cli"
+command = "viewport-list"
+
+[docker]
+    image = "Dockerfile"
+    working_dir = "/"
+
+[arguments]

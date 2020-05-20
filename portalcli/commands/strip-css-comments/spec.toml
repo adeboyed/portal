@@ -1,0 +1,14 @@
+
+name = "strip-css-comments-cli"
+command = "strip-css-comments"
+
+[docker]
+    image = "Dockerfile"
+    working_dir = "/"
+
+[arguments]
+
+    [arguments.inputfile]
+        shorthand = "*"
+        argType = "string"
+        docker = "inOutFile"

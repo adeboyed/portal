@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+import portal
+
+if __name__ == '__main__':
+    portal.main()

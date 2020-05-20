@@ -1,0 +1,9 @@
+
+name = "whois"
+command = "whois"
+
+[docker]
+    image = "dentych/whois"
+    working_dir = "/"
+
+[arguments]
