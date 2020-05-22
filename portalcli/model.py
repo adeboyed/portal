@@ -2,11 +2,12 @@
 
 class ContainerInfo(object):
 
-    def __init__(self, container_id, command, vol_bindings, port_bindings):
+    def __init__(self, container_id, command, vol_bindings, port_bindings, environment_vars):
         self._container_id = container_id
         self._command = command
         self._vol_bindings = vol_bindings
         self._port_bindings = port_bindings
+        self._environment_vars = environment_vars
 
     @property
     def container_id(self):
@@ -23,6 +24,10 @@ class ContainerInfo(object):
     @property
     def volumes(self):
         return list(map(lambda x: x['bind'], self._vol_bindings.values()))
+
+    @property
+    def environment_vars(self):
+        return self._environment_vars
 
     @property
     def vol_bindings(self):

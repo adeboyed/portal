@@ -1,25 +1,29 @@
 # Portal
+> Using Docker on the command line seamlessly.
 
 [![GitHub license](https://img.shields.io/badge/license-Apache-blue.svg)](https://github.com/adeboyed/portal/blob/master/LICENSE)
 
 
 `portal` is a command line tool for running commands with no dependencies.
-Instead of installing a language stack, dependencies, libraries and more, use docker containers to run commands as if they were installed on your local machine.
+Instead of installing a language stack, dependencies, libraries and more, you can use docker containers to run commands as if they were installed on your local machine.
 It removes a lot of the bookeeping required to transfer data and files to and from the docker container.
-
-## Example
-Next time you want to want to run a simple
-
 
     portal [COMMAND] [COMMAND OPTIONS]
 
-e.g. for http-server
 
-    portal http-server public
+## Example
+For example, you can format your latex document:
+
+    portal latexindent report.tex
+
+Or convert a jpeg to webp:
+
+    portal webp input_file.jpeg -o output_file.webp
 
 ## Installation
 
-Portal requires Python 3+ to run and Docker to be installed.
+Portal requires Python 3+ to run and Docker to be installed and running.
+
 
 ### Simple Installation
 
@@ -42,9 +46,11 @@ If you need to make changes/test out a new command, you can use `portal` directl
 - httpie
 - gollum
 - shellcheck
+- surge
 - openapi-generator-cli
 - [And more!](./wiki/COMMANDS.md)
 
+*Interactive commands are currently unsupported*
 
 ## Documentation
 

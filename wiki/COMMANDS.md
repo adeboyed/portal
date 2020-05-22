@@ -16,6 +16,7 @@
 - [openapi-generator-cli](https://openapi-generator.tech/)
 - [speedtest-cli](https://github.com/sivel/speedtest-cli)
 - [shellcheck](https://github.com/koalaman/shellcheck)
+- [surge](https://surge.sh/)
 - [strip-css-comments](https://www.npmjs.com/package/strip-css-comments)
 - [viewport-list](https://www.npmjs.com/package/viewport-list)
 - [whois](https://packages.debian.org/sid/whois)

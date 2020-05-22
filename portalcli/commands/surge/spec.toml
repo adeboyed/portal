@@ -1,0 +1,27 @@
+
+name = "surge.sh"
+command = "surge"
+
+[docker]
+    image = "Dockerfile"
+    working_dir = "/"
+
+[[environment]]
+    name = ".netrc"
+    docker = "inOutFile"
+
+[[environment]]
+    name = "SURGE_TOKEN"
+    docker = "env"
+
+[arguments]
+
+    [arguments.project]
+        argType = "path"
+        docker = "volumeBinding"
+        default = "."
+        internalPath = "/workdir"
+
+    [arguments.domain]
+        argType = "string"
+        docker = "passthrough"

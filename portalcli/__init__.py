@@ -7,9 +7,7 @@ from .Portal import Portal
 
 def _real_main(argv=None):
     retcode = 0
-    # argv = ['portal', 'latexindent', '-w', 'hello.tex']
-    # argv = ['portal', 'http-server', 'commands']
-
+    
     cmd, args = split_argv(argv)
 
     portal = Portal()

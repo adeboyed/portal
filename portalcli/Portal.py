@@ -8,11 +8,13 @@ import signal
 import tarfile
 import uuid
 import errno
+from io import BytesIO
+from pathlib import Path
 
 
 from docker import APIClient
 from docker.errors import ImageNotFound
-from .utils import construct_container, generate_argparse, merge_passthrough_vars, get_input_files, get_output_files
+from .utils import construct_container, generate_argparse, merge_passthrough_vars, get_input_files, get_output_files, get_input_env_files, get_output_env_files
 
 
 class Portal(object):
@@ -42,15 +44,23 @@ class Portal(object):
             self._std_in = sys.stdin.buffer.read()
         elif not sys.stdin.isatty():
             self._std_in = sys.stdin.buffer.read()
-
-    def _download_docker_image(self, docker_spec):
+    
+    def _download_docker_image(self, command, docker_spec):
         docker_image_name = None
 
         if (docker_spec['image'] == 'Dockerfile'):
-            dockerfile = pkgutil.get_data(
-                __name__, "commands/%s/Dockerfile" %  docker_spec['command'] ).decode('utf-8')
-            self._docker_client.build(fileobj=dockerfile, tag="portal/" + docker_spec['command'], rm=True)
-            docker_image_name = "portal/" + docker_spec['command']
+            docker_image_name = "portal/" + command
+            try:
+                image_data = self._docker_client.inspect_image(docker_image_name)
+                return image_data
+            except ImageNotFound:
+                dockerfile = pkgutil.get_data(
+                    __name__, "commands/%s/Dockerfile" %  command ).decode('utf-8')
+                f = BytesIO(dockerfile.encode('utf-8'))
+                for progress_dict in self._docker_client.build(fileobj=f, quiet=True, tag=docker_image_name, decode=True, rm=True):
+                    print(progress_dict)
+                # if ('progress' in progress_dict):
+                #     print(progress_dict['progress'])
         else:
             docker_image_name = docker_spec['image']
             try:
@@ -99,55 +109,63 @@ class Portal(object):
             cinfo.container_id,
             command=cinfo.command,
             ports=cinfo.ports,
+            environment=cinfo.environment_vars,
             stdin_open=attach_stdin,
             volumes=cinfo.volumes,
+            # tty=True,
             host_config=host_config
         )
 
     def _copy_artefacts_to_container(self, container_id, command_spec):
-        files_to_copy = get_input_files(command_spec)
-
-        if (len(files_to_copy) > 0):
+        def copy_file(input_path, input_name,  output_path):
             tar_name = str(uuid.uuid4()) + '.tar'
             tf = tarfile.open(tar_name, mode='w')
 
-            for file in files_to_copy:
-                print(file['value'])
-                if (os.path.isfile(file['value'])):
-                    tf.add(file['value'])
-                else:
-                    print("Could not find file %s " % file['value'])
-                    tf.close()
-                    os.remove(tar_name)
-                    return False
+            if (os.path.isfile(input_path)):
+                tf.add(input_path, arcname=input_name)
+            else:
+                print("Could not find file %s " % input_path)
+                tf.close()
+                os.remove(tar_name)
+                return False
 
             tf.close()
             with open(tar_name, 'rb') as tar_file:
                 data = tar_file.read()
-                self._docker_client.put_archive(container_id, command_spec['docker']['working_dir'], data)
+                self._docker_client.put_archive(container_id, output_path, data)
 
             os.remove(tar_name)
 
+
+        for file in get_input_files(command_spec):
+            copy_file(file['value'], file['value'], command_spec['docker']['working_dir'])
+
+        home = str(Path.home())
+        for file in get_input_env_files(command_spec):
+            copy_file(os.path.join(home, file['name']), file['name'], '/root')
         return True
 
 
     def _copy_artefacts_from_container(self, container_id, command_spec):
-        files_to_copy = get_output_files(command_spec)
+        def copy_file(input_file, output_path):
+            tar_name = str(uuid.uuid4()) + '.tar'
+            f = open(tar_name, 'wb')
+            bits, _ = self._docker_client.get_archive(
+                container_id, input_file)
+            for chunk in bits:
+                f.write(chunk)
+            f.close()
 
-        if (len(files_to_copy) > 0):
-            for file in files_to_copy:
-                tar_name = str(uuid.uuid4()) + '.tar'
-                f = open(tar_name, 'wb')
-                bits, _ = self._docker_client.get_archive(
-                    container_id, os.path.join(command_spec['docker']['working_dir'], file['value']))
-                for chunk in bits:
-                    f.write(chunk)
-                f.close()
+            tar = tarfile.open(tar_name)
+            tar.extractall()
+            tar.close()
+            os.remove(tar_name)
 
-                tar = tarfile.open(tar_name)
-                tar.extractall()
-                tar.close()
-                os.remove(tar_name)
+        for file in get_output_files(command_spec):
+            copy_file(os.path.join(command_spec['docker']['working_dir'], file['value']), None)
+
+        for file in get_output_env_files(command_spec):
+            copy_file(os.path.join('/root/', file['name']), None)
 
     def run_command(self, command, argv):
 
@@ -164,8 +182,8 @@ class Portal(object):
 
         command_spec, cmd_argv = self._parse_args(command_spec, argv)
         self._validate_spec(command_spec)
-
-        image_info = self._download_docker_image(command_spec['docker'])
+        
+        image_info = self._download_docker_image(command, command_spec['docker'])
         cinfo = construct_container(image_info, cmd_argv, command_spec)
 
         docker_container = self._create_container(cinfo, (self._std_in is not None))

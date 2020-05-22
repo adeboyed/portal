@@ -18,7 +18,7 @@ install: portal
 	install -d $(DESTDIR)$(BINDIR)
 	install -m 755 portal $(DESTDIR)$(BINDIR)
 
-portal: src/*.py
+portal: portalcli/*.py
 	mkdir -p zip
 	cp -r src zip/portal
 	touch -t 200001010101 zip/portal/*.py

@@ -35,12 +35,18 @@ def generate_argparse(command_name, spec_args):
             continue
 
         default = spec['default'] if 'default' in spec else ''
-        longname = '--' + spec_key if spec['shorthand'] != spec_key else None
-        parser.add_argument('-' + spec['shorthand'],
-                            longname,
-                            dest=spec['shorthand'],
-                            default=default,
-                            action=get_action(spec['argType']))
+        if ('shorthand' in spec):
+            longname = '--' + spec_key if spec['shorthand'] != spec_key else None
+            parser.add_argument('-' + spec['shorthand'],
+                                longname,
+                                dest=spec['shorthand'],
+                                default=default,
+                                action=get_action(spec['argType']))
+        else:
+            parser.add_argument('--' + spec_key,
+                                dest=spec['shorthand'],
+                                default=default,
+                                action=get_action(spec['argType']))
     
     parser.add_argument('cmdargs', nargs=argparse.REMAINDER)
     return parser
@@ -62,6 +68,18 @@ def get_input_files(command_spec):
 
 def get_output_files(command_spec):
     return list(filter(check_if_output_cmd, command_spec['arguments'].values()))
+
+def check_if_input_env(argument):
+    return (argument['docker'] == 'inputFile' or (argument['docker']) == 'inOutFile')
+
+def check_if_output_env(argument):
+    return (argument['docker'] == 'outputFile' or (argument['docker']) == 'inOutFile')
+
+def get_input_env_files(command_spec):
+    return [] if not 'environment' in command_spec else list(filter(check_if_input_env, command_spec['environment']))
+
+def get_output_env_files(command_spec):
+    return [] if not 'environment' in command_spec else list(filter(check_if_output_env, command_spec['environment']))
 
 def construct_container(image_info, args, command_spec):
     container_id = image_info['Id']
@@ -89,7 +107,15 @@ def construct_container(image_info, args, command_spec):
             'mode': 'rw'
         }
 
-    return ContainerInfo(container_id, args_str, vol_bindings, port_bindings)
+    environment_vars = {}
+
+    # Environment
+    if ('environment' in command_spec):
+        for envvar in command_spec['environment']:
+            if (envvar['docker'] == 'env' and os.getenv(envvar['name']) is not None):
+                environment_vars[envvar['name']] = os.getenv(envvar['name'])
+    
+    return ContainerInfo(container_id, args_str, vol_bindings, port_bindings, environment_vars)
 
 def merge_passthrough_vars(spec_data):
     new_args = []
